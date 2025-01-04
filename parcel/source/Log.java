@@ -12,7 +12,10 @@ public class Log {
         }
         return instance;
     }
-
+    public String getLogData() {
+        return logData.toString();
+    }
+    
     public void addLog(String message) {
         logData.append(message).append("\n");
     }

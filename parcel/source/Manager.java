@@ -1,25 +1,45 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class Manager {
-    private QueueOfCustomers customerQueue;
-    private ParcelMap parcelMap;
+    private Queue<Customer> customerQueue;
+    private Queue<Parcel> parcelQueue;
 
     public Manager() {
-        customerQueue = new QueueOfCustomers();
-        parcelMap = new ParcelMap();
+        customerQueue = new LinkedList<>();
+        parcelQueue = new LinkedList<>();
     }
 
-    public void addCustomerToQueue(Customer customer) {
-        customerQueue.addCustomer(customer);
+    public void addCustomer(Customer customer) {
+        customerQueue.add(customer);
     }
 
-    public void addParcelToMap(Parcel parcel) {
-        parcelMap.addParcel(parcel);
+    public void addParcel(Parcel parcel) {
+        parcelQueue.add(parcel);
     }
 
-    public void processNextCustomer(String parcelId) {
-        Customer customer = customerQueue.removeCustomer();
-        Parcel parcel = parcelMap.getParcel(parcelId);
+    public String processNextCustomer() {
+        if (customerQueue.isEmpty() || parcelQueue.isEmpty()) {
+            return null;
+        }
+        Customer customer = customerQueue.poll();
+        Parcel parcel = parcelQueue.poll();
+        return "Processed Customer: " + customer + "\nParcel: " + parcel;
+    }
 
-        Worker worker = new Worker();
-        worker.processCustomer(customer, parcel);
+    public String getCustomerQueueAsString() {
+        StringBuilder sb = new StringBuilder();
+        for (Customer customer : customerQueue) {
+            sb.append(customer).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String getParcelListAsString() {
+        StringBuilder sb = new StringBuilder();
+        for (Parcel parcel : parcelQueue) {
+            sb.append(parcel).append("\n");
+        }
+        return sb.toString();
     }
 }
