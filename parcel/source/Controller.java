@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class Controller {
     private MainView view;
@@ -12,7 +13,7 @@ public class Controller {
         view.getProcessButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                processNextCustomer();
+            processNextCustomer();
             }
         });
 
@@ -32,7 +33,7 @@ public class Controller {
             }
         });
 
-        view.getViewLogButton().addActionListener(new ActionListener() {
+        view.getViewLogsButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new LogViewer(view, Log.getInstance());  
@@ -40,18 +41,36 @@ public class Controller {
         });
     }
 
-    private void processNextCustomer() {
-        String processed = manager.processNextCustomer();
-        if (processed != null) {
-            view.updateProcessingArea(processed);
-            updateView();
-        } else {
-            view.updateProcessingArea("No customers or parcels to process.");
+private void processNextCustomer() {
+    manager.processNextCustomer(); // Process the next customer
+
+    if (manager.currentlyProcessing != null) {
+        List<Parcel> parcels = manager.getParcelsForCustomer(manager.currentlyProcessing.getId());
+        Object[][] parcelData = new Object[parcels.size()][4];
+        for (int i = 0; i < parcels.size(); i++) {
+            Parcel p = parcels.get(i);
+            parcelData[i][0] = p.getId();
+            parcelData[i][1] = p.getWeight();
+            parcelData[i][2] = p.getDestination();
+            parcelData[i][3] = p.getCustomerId();
         }
+        view.updateParcelTable(parcelData); 
+    } else {
+        view.updateParcelTable(new Object[0][0]); 
     }
 
+    updateView();
+}
+
+
+
     private void updateView() {
-        view.updateCustomerQueue(manager.getCustomerQueueAsString());
-        view.updateParcelList(manager.getParcelListAsString());
+        Object[][] customerData = manager.getCustomerDataForTable();
+        view.updateCustomerTable(customerData);
+
+        // view.updateParcelList(manager.getParcelListAsString());
+        Object[][] parcelData = manager.getParcelDataForTable();
+        view.updateParcelTable(parcelData);
+        view.updateProcessingArea(manager.getProcessingInfo());
     }
 }

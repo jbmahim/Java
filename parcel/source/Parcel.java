@@ -2,11 +2,13 @@ public class Parcel {
     private String id;
     private double weight;
     private String destination;
+    private String customerId; 
 
-    public Parcel(String id, double weight, String destination) {
+    public Parcel(String id, double weight, String destination, String customerId) {
         this.id = id;
         this.weight = weight;
         this.destination = destination;
+        this.customerId = customerId;
     }
 
     public String getId() {
@@ -21,8 +23,12 @@ public class Parcel {
         return destination;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
     @Override
     public String toString() {
-        return "Parcel [ID=" + id + ", Weight=" + weight + ", Destination=" + destination + "]";
+        return "Parcel [ID=" + id + ", Weight=" + weight + ", Destination=" + destination + ", Customer ID=" + customerId + "]";
     }
 }
