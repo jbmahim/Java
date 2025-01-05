@@ -31,15 +31,27 @@ public class Manager {
     //     }
     // }
 
+
     public void processNextCustomer() {
         if (!customerQueue.isEmpty()) {
             currentlyProcessing = customerQueue.poll();
             System.out.println("Processing: " + currentlyProcessing.getName());
-            Log.getInstance().addLog("Customer Processed: " + currentlyProcessing.getName() + " (ID: " + currentlyProcessing.getId() + ")");
-
+    
+            parcelQueue.stream()
+                .filter(parcel -> parcel.getCustomerId().equals(currentlyProcessing.getId()))
+                .forEach(parcel -> {
+                    double fee = parcel.calculateFee(); 
+                    Log.getInstance().addLog(
+                        "Customer Processed: " + currentlyProcessing.getName() +
+                        " (ID: " + currentlyProcessing.getId() + ")" +
+                        " Parcel Fee: " + fee +
+                        " Parcel ID: " + parcel.getId()
+                    );
+                });
+    
             parcelQueue.removeIf(parcel -> parcel.getCustomerId().equals(currentlyProcessing.getId()));
         } else {
-            currentlyProcessing = null; // No customers to process
+            currentlyProcessing = null; 
             System.out.println("No customers in the queue.");
         }
     }
